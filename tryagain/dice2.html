@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC >
+<html>
+<head>
+ <title>骰子游戏</title>
+ <meta http--equiv="Content--Type" content="text/html;charset=utf-8">
+<script language = "JavaScript">
+var throwtime = 0; //第几次掷骰子
+var width = 200;
+var url = encodeURIComponent(JSON.stringify(data))
+var data = JSON.parse(decodeURIComponent(url))
+var sum = 0;   //两次点数之和
+var ch1;    //第一次的点数
+var ch2;    //第二次的点数
+var IS_WIN = false;   //是否输赢
+var gameOver = false;  //游戏是否结束
+var IS_FIRST = true;   //是不是第一轮
+//重新开始的函数
+function restart()   
+{
+throwtime = 0;
+sum = 0;
+ch1 = 0;
+ch2 = 0;
+IS_WIN = false;
+gameOver = false;
+IS_FIRST = true;
+}
+//初始化的函数
+function myinit()
+{
+       var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ //绘制两个骰子面
+ context.strokeRect(5,5,100,100);
+ context.strokeRect(205,5,100,100);
+}
+/*draw1到draw6分别是对应1-6点的画点函数*/
+function draw1()
+{
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d'); 
+ context.beginPath();
+ context.arc(30+200*throwtime,25,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+}
+function draw2()
+{
+ draw1();
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ context.beginPath();
+ context.arc(80+200*throwtime,25,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+ 
+}
+function draw3()
+{
+ draw2();
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ context.beginPath();
+ context.arc(30+200*throwtime,55,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+}
+function draw4()
+{
+ draw3();
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ context.beginPath();
+ context.arc(80+200*throwtime,55,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+ 
+}
+function draw5()
+{
+ draw4();
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ context.beginPath();
+ context.arc(30+200*throwtime,85,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+}
+function draw6()
+{
+ draw5();
+ var con = document.getElementById('canvass');
+       var context = con.getContext('2d');
+ context.beginPath();
+ context.arc(80+200*throwtime,85,5,0,Math.PI*2,true);
+ context.closePath();
+ context.fill();
+}
+//更新游戏的信息
+function update()
+{
+ if(gameOver== true)
+ {
+  if(IS_WIN == true)
+  {
+   document.form1.tip.value = "游戏结束，请重新开始";
+   document.form1.outcome.value = "you Win !";
+   alert("恭喜，你赢了");
+  }
+  else
+  {
+   document.form1.tip.value = "游戏结束，请重新开始";
+   document.form1.outcome.value = "you Lose !";
+   alert("非常遗憾，你输了");
+  }
+ }
+ else 
+ {
+  document.form1.tip.value = "还没分出胜负喔~~~"; 
+  document.form1.point.value = sum; 
+ }
+}
+//核心函数
+function decide()
+{
+ //如果游戏结束，提示重新开始
+      if(gameOver)
+ {
+  alert("Please restart game!");
+  return;
+ }
+       //清理上次骰子的图
+      if(IS_FIRST == false && gameOver == false) 
+      {
+  var con = document.getElementById('canvass');
+          var context = con.getContext('2d'); 
+  context.clearRect(5,5,100,100);
+  context.clearRect(205,5,100,100);
+ }
+ //第一次骰子的图
+      if(throwtime == 0)ch1 = 1+Math.floor(Math.random()*6);
+      switch(ch1)
+ {
+  case 1 : draw1();break;
+  case 2 : draw2();break;
+  case 3 : draw3();break;
+  case 4 : draw4();break;
+  case 5 : draw5();break;
+  case 6 : draw6();break;
+ }
+ throwtime++;
+ //第二次骰子的图
+      if(throwtime == 1)ch2 = 1+Math.floor(Math.random()*6);
+      switch(ch2)
+ {
+  case 1 : draw1();break;
+  case 2 : draw2();break;
+  case 3 : draw3();break;
+  case 4 : draw4();break;
+  case 5 : draw5();break;
+  case 6 : draw6();break;
+ }
+ throwtime--;
+ if(ch1+ch2 == sum || (IS_FIRST == true && (((ch1+ch2) == 7) || ((ch1+ch2) == 11))))
+ {
+  IS_WIN = true;
+  gameOver = true;
+  return;
+ }
+ sum = ch1+ch2;
+ if((IS_FIRST == false &&(sum == 2 || sum == 3 || sum == 7 || sum == 12)))
+ {
+   IS_WIN = false;
+  gameOver = true;
+  }
+ IS_FIRST = false;
+ update();
+}
+</script>
+</head>
+<body onload = "myinit();">
+<canvas id = "canvass" name = "canvass" width = "800" height = "200"></canvas><hr>
+<form name="form1" id = "form1" >
+  提示框:<input type = "text" , name = "tip" id = "tip" value = "请掷骰子"/>
+  点数:<input type = "text" name = "point"  id = "point" value = ""><br><br>
+  <input type = "button" name = "mybutton" id = "mybutton" value = "投掷" onclick ="decide();" />
+  <input type = "button" value = "重新开始" onclick = "restart();"/><br><br>
+  结果:<input type = "text" name = "outcome" id = "outcome" value = " "/><br><br>
+</form>
+</body>
+</html>
